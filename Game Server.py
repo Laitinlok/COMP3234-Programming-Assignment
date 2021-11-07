@@ -2,6 +2,7 @@ import socket
 import fileinput
 import sys
 import threading
+import random
 
 class ServerThread(threading.Thread):
 	def __init__(self, client):
@@ -9,6 +10,26 @@ class ServerThread(threading.Thread):
 		self.client = client			
 		
 	def run(self):
+		def game(player1, player2):
+			rmsg = connectionSocket.recv(1024).decode()
+			recv=rmsg.split()
+			while recv[0]!="/guess" or len(recv)!=2:
+				rmsg = connectionSocket.recv(1024).decode()
+				recv=rmsg.split()
+			if recv[0]=="/guess" and len(recv)==2:
+				f=open("Room"+room+"Game.log", "a")
+				f.write(player1+" guessed "+recv[1])
+				f.close()	
+				x=random.randint(0,1)
+				f=open("Room"+room+"GameAns.txt", "r+")
+				line=f.read()
+				if len(line)==0:
+					f.write(x)
+				else:
+					x=line
+				f.close()	
+						
+				
 		def enter(room, username):
 			while True:
 				rmsg = connectionSocket.recv(1024).decode()
@@ -35,6 +56,9 @@ class ServerThread(threading.Thread):
 						f=open("Room"+room+".txt", "a")
 						f.write(username+"\n")
 						f.close()
+						f=open("Room"+room+"Game.log", "a")
+						f.write(username+" entered the room.\n")
+						f.close()
 						f=open("Rooms.txt", "r+")
 						rooms=f.read()
 						lines=rooms.splitlines()
@@ -59,6 +83,14 @@ class ServerThread(threading.Thread):
 								f.write("Room "+room+"\t"+"2/2")
 							f.truncate()
 						f.close()
+						f=open("Room"+room+"Game.log", "a")
+						f.write(username+" entered the room.\n")
+						f.write("Game started.\n")
+						f.close()
+						f=open("Room"+room+".txt","r")
+						players=f.read().splitlines()
+						f.close()
+						game(players[0], players[1])
 					else:
 						msg="3013 The room is full"
 					connectionSocket.send(msg.encode('ascii'))
