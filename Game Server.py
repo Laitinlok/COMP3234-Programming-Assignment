@@ -20,9 +20,9 @@ class ServerThread(threading.Thread):
 					if len(players)==0:
 						msg="3001 No players in this room"
 					elif len(players)==1:
-						msg="3001"+players[0]
+						msg="3001 "+players[0]
 					elif len(players)==2:
-						msg="3001"+players[0]+players[1]
+						msg="3001 "+players[0]+" "+players[1]
 					connectionSocket.send(msg.encode('ascii'))
 				elif recv[0]=="/enter":
 					f=open("Rooms.txt", "r")
@@ -41,9 +41,9 @@ class ServerThread(threading.Thread):
 						f.seek(0)
 						for line in lines:
 							if line != "Room "+room+"\t"+"0/2":
-           	 							f.write(line)
+           	 							f.write(line+"\n")
 							else:
-								f.write("Room "+room+"\t"+"1/2")
+								f.write("Room "+room+"\t"+"1/2"+"\n")
 							f.truncate()
 						f.close()
 					elif verifyroom[2]=="1/2":
