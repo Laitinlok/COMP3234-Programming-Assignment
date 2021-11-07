@@ -33,10 +33,11 @@ class ServerThread(threading.Thread):
 				print('Command Received')
 				f=open("Rooms.txt", "r")
 				rooms=f.read()
-				lines=userinfo.splitlines()
+				lines=rooms.splitlines()
+				f.close()
 				if len(lines)==1:
-					f1=open("Rooms.txt", "a")
-					f1.write('Room 1/t0/2/n')
+					f=open("Rooms.txt", "a")
+					f.write('Room 1/t0/2/n')
 		
 class ServerMain:
 	def server_run(self):  
