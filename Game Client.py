@@ -8,4 +8,4 @@ username= input("Please input your user name:")
 password=input("Please input your password:")
 msg="/login "+username+" "+password
 clientSocket.send(msg.encode('ascii'))
-rmsg = clientSocket.recv(1024)
+rmsg = clientSocket.recv(1024).decode
