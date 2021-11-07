@@ -8,28 +8,35 @@ class ServerThread(threading.Thread):
 		self.client = client
 
 	def run(self):
-		connectionSocket, addr = self.client    
-		rmsg = connectionSocket.recv(1024).decode()
-		recv=rmsg.split()
-		if recv[0]=="/login":
-			username=recv[1]
-			password=recv[2]
-			userpass= username+":"+password
-			f=open("UserInfo.txt", "r")
-			userinfo=f.read()
-			lines=userinfo.splitlines()
-			i=0
-			for line in lines:
-				if line==userpass:
-					i=1
-			if i==1:
-				msg="1001 Authentication successful"
-			else:
-				msg="1002 Authentication failed"
-			connectionSocket.send(msg.encode('ascii'))
-		rmsg=rmsg = connectionSocket.recv(1024).decode()
-		recv=rmsg.split()
-			
+		connectionSocket, addr = self.client
+		while True:    
+			rmsg = connectionSocket.recv(1024).decode()
+			recv=rmsg.split()
+			if recv[0]=="/login":
+				username=recv[1]
+				password=recv[2]
+				userpass= username+":"+password
+				f=open("UserInfo.txt", "r")
+				userinfo=f.read()
+				lines=userinfo.splitlines()
+				i=0
+				for line in lines:
+					if line==userpass:
+						i=1
+				if i==1:
+					msg="1001 Authentication successful"
+				else:
+					msg="1002 Authentication failed"
+				connectionSocket.send(msg.encode('ascii'))
+				f.close()
+			if recv[0]=="/list":
+				print('Command Received')
+				f=open("Rooms.txt", "r")
+				rooms=f.read()
+				lines=userinfo.splitlines()
+				if len(lines)==1:
+					f1=open("Rooms.txt", "a")
+					f1.write('Room 1/t0/2/n')
 		
 class ServerMain:
 	def server_run(self):  
