@@ -14,7 +14,16 @@ class ServerThread(threading.Thread):
 		if recv[0]=="/login":
 			username=recv[1]
 			password=recv[2]
-			f = open("UserInfo.txt", "r")	
+			userpass= username+":"+password
+			f = open("UserInfo.txt", "r")
+			i=0
+			for x in f:
+				if x==userpass:
+					i=1
+			if i==1:
+				msg="1001 Authentication successful"
+			else:
+				msg="1002 Authentication failed"
 		
 class ServerMain:
 	def server_run(self):  
