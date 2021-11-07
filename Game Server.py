@@ -15,6 +15,7 @@ class ServerThread(threading.Thread):
 				if recv[0]=="/list":
 					f=open("Room"+room+".txt","r")
 					players=f.read().splitlines()
+					f.close()
 					if len(players)==0:
 						msg="3001 No players in this room"
 					elif len(players)==1:
@@ -22,7 +23,21 @@ class ServerThread(threading.Thread):
 					elif len(players)==2:
 						msg="3001"+players[0]+players[1]
 					connectionSocket.send(msg.encode('ascii'))
-			
+				elif recv[0]="/enter":
+					f=open("Rooms.txt", "r")
+					rooms=f.read()
+					lines=rooms.splitlines()
+					verifyroom=lines[room].split()
+					if verifyroom[2]=="0/2":
+						msg="3011 Wait"
+					elif verifyroom[2]=="0/2":
+						msg="3012 Game started. Please guess true or false"
+					else:
+						msg="3013 The room is full"
+					connectionSocket.send(msg.encode('ascii'))
+				else:
+					msg="4002 Unrecognized message"
+					connectionSocket.send(msg.encode('ascii'))
 
 		connectionSocket, addr = self.client
 		while True:    
@@ -45,8 +60,6 @@ class ServerThread(threading.Thread):
 					msg="1002 Authentication failed"
 				connectionSocket.send(msg.encode('ascii'))
 				f.close()
-			elif recv[0]=="/list":
-				print('Command Received')
 				f=open("Rooms.txt", "r")
 				rooms=f.read()
 				lines=rooms.splitlines()
@@ -66,14 +79,28 @@ class ServerThread(threading.Thread):
 						f.close()
 						f=open("Room"+str(n)+".txt", "w")
 						f.close()	
+			elif recv[0]=="/list":
+				print('Command Received')
 				f=open("Rooms.txt", "r")
 				rooms=f.read()
 				connectionSocket.send(rooms.encode('ascii'))
+				f.close()
 			elif recv[0]=="/enter":
-				room=recv[1]
-				msg="Entering Room "+room+". Please use /enter to confirm"
-				connectionSocket.send(msg.encode('ascii'))
-				enter(room)
+				f=open("Rooms.txt", "r")
+				rooms=f.read()
+				lines=rooms.splitlines()
+				f.close()
+				if len(recv)!=2:
+					msg="Unkown message. Please specify your room."
+					connectionSocket.send(msg.encode('ascii'))
+				elif int(recv[1])>len(lines)-1:
+					msg="Room does not exist. Please choose another one."
+					connectionSocket.send(msg.encode('ascii'))
+				else:
+					room=recv[1]
+					msg="Entering Room "+room+". Please use /enter to confirm"
+					connectionSocket.send(msg.encode('ascii'))
+					enter(room)
 			else:
 				msg="4002 Unrecognized message"
 				connectionSocket.send(msg.encode('ascii'))
