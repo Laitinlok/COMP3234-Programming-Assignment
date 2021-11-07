@@ -37,7 +37,11 @@ class ServerThread(threading.Thread):
 				f.close()
 				if len(lines)==1:
 					f=open("Rooms.txt", "a")
-					f.write('Room 1/t0/2/n')
+					f.write("Room 1"+"\t"+"0/2"+"\n")
+					f.close()
+				f=open("Rooms.txt", "r")
+				rooms=f.read()
+				connectionSocket.send(rooms.encode('ascii'))
 		
 class ServerMain:
 	def server_run(self):  
