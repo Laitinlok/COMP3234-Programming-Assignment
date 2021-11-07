@@ -27,6 +27,8 @@ class ServerThread(threading.Thread):
 			else:
 				msg="1002 Authentication failed"
 			connectionSocket.send(msg.encode('ascii'))
+		rmsg=rmsg = connectionSocket.recv(1024).decode()
+		recv=rmsg.split()
 			
 		
 class ServerMain:
