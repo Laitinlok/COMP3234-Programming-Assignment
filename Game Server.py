@@ -23,7 +23,7 @@ class ServerThread(threading.Thread):
 					elif len(players)==2:
 						msg="3001"+players[0]+players[1]
 					connectionSocket.send(msg.encode('ascii'))
-				elif recv[0]="/enter":
+				elif recv[0]=="/enter":
 					f=open("Rooms.txt", "r")
 					rooms=f.read()
 					lines=rooms.splitlines()
