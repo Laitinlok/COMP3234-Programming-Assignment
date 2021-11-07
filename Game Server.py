@@ -5,9 +5,25 @@ import threading
 class ServerThread(threading.Thread):
 	def __init__(self, client):
 		threading.Thread.__init__(self)
-		self.client = client
-
+		self.client = client			
+		
 	def run(self):
+		def enter(room):
+			while True:
+				rmsg = connectionSocket.recv(1024).decode()
+				recv=rmsg.split()
+				if recv[0]=="/list":
+					f=open("Room"+room+".txt","r")
+					players=f.read().splitlines()
+					if len(players)==0:
+						msg="3001 No players in this room"
+					elif len(players)==1:
+						msg="3001"+players[0]
+					elif len(players)==2:
+						msg="3001"+players[0]+players[1]
+					connectionSocket.send(msg.encode('ascii'))
+			
+
 		connectionSocket, addr = self.client
 		while True:    
 			rmsg = connectionSocket.recv(1024).decode()
@@ -29,7 +45,7 @@ class ServerThread(threading.Thread):
 					msg="1002 Authentication failed"
 				connectionSocket.send(msg.encode('ascii'))
 				f.close()
-			if recv[0]=="/list":
+			elif recv[0]=="/list":
 				print('Command Received')
 				f=open("Rooms.txt", "r")
 				rooms=f.read()
@@ -39,9 +55,29 @@ class ServerThread(threading.Thread):
 					f=open("Rooms.txt", "a")
 					f.write("Room 1"+"\t"+"0/2"+"\n")
 					f.close()
+					f=open("Room1.txt", "w")
+					f.close()
+				for x in range (1, len(lines)):
+					room=lines[x].split()
+					if room[2]=="2/2":
+						n=x+1
+						f=open("Rooms.txt", "a")
+						f.write("Room "+str(n)+"\t"+"0/2"+"\n")
+						f.close()
+						f=open("Room"+str(n)+".txt", "w")
+						f.close()	
 				f=open("Rooms.txt", "r")
 				rooms=f.read()
 				connectionSocket.send(rooms.encode('ascii'))
+			elif recv[0]=="/enter":
+				room=recv[1]
+				msg="Entering Room "+room+". Please use /enter to confirm"
+				connectionSocket.send(msg.encode('ascii'))
+				enter(room)
+			else:
+				msg="4002 Unrecognized message"
+				connectionSocket.send(msg.encode('ascii'))
+				
 		
 class ServerMain:
 	def server_run(self):  
