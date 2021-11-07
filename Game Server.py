@@ -20,6 +20,10 @@ class ServerThread(threading.Thread):
 				f=open("Room"+room+"Game.log", "a")
 				f.write(player1+" guessed "+recv[1])
 				f.close()	
+				if recv[1]=="True":
+					guess=1
+				elif recv[1]=="False":
+					guess=0
 				x=random.randint(0,1)
 				f=open("Room"+room+"GameAns.txt", "r+")
 				line=f.read()
@@ -28,7 +32,7 @@ class ServerThread(threading.Thread):
 				else:
 					x=line
 				f.close()	
-						
+					
 				
 		def enter(room, username):
 			while True:
