@@ -24,6 +24,7 @@ class ServerThread(threading.Thread):
 				msg="1001 Authentication successful"
 			else:
 				msg="1002 Authentication failed"
+			connectionSocket.send(msg.encode('ascii'))
 		
 class ServerMain:
 	def server_run(self):  
