@@ -97,6 +97,8 @@ class ServerThread(threading.Thread):
 					f.close()
 					f=open("Room1.txt", "w")
 					f.close()
+					f=open("Room1Game.log", "w")
+					f.close()
 				for x in range (1, len(lines)):
 					room=lines[x].split()
 					if room[2]=="2/2":
@@ -106,6 +108,8 @@ class ServerThread(threading.Thread):
 						f.close()
 						f=open("Room"+str(n)+".txt", "w")
 						f.close()	
+						f=open("Room"+str(n)+"Game.log", "w")
+						f.close()
 			elif recv[0]=="/list":
 				print('Command Received')
 				f=open("Rooms.txt", "r")
