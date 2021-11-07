@@ -14,7 +14,7 @@ class ServerThread(threading.Thread):
 		if recv[0]=="/login":
 			username=recv[1]
 			password=recv[2]
-		
+			f = open("UserInfo.txt", "r")	
 		
 class ServerMain:
 	def server_run(self):  
