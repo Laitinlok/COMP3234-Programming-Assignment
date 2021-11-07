@@ -1,5 +1,6 @@
 import socket
-
+import fileinput
+import sys
 import threading
 
 class ServerThread(threading.Thread):
@@ -8,7 +9,7 @@ class ServerThread(threading.Thread):
 		self.client = client			
 		
 	def run(self):
-		def enter(room):
+		def enter(room, username):
 			while True:
 				rmsg = connectionSocket.recv(1024).decode()
 				recv=rmsg.split()
@@ -26,12 +27,38 @@ class ServerThread(threading.Thread):
 				elif recv[0]=="/enter":
 					f=open("Rooms.txt", "r")
 					rooms=f.read()
+					f.close()
 					lines=rooms.splitlines()
-					verifyroom=lines[room].split()
+					verifyroom=lines[int(room)].split()
 					if verifyroom[2]=="0/2":
 						msg="3011 Wait"
-					elif verifyroom[2]=="0/2":
+						f=open("Room"+room+".txt", "a")
+						f.write(username+"\n")
+						f.close()
+						f=open("Rooms.txt", "r+")
+						rooms=f.read()
+						lines=rooms.splitlines()
+						f.seek(0)
+						for line in lines:
+							if line != "Room "+room+"\t"+"0/2":
+           	 							f.write(line)
+							else:
+								f.write("Room "+room+"\t"+"1/2")
+							f.truncate()
+						f.close()
+					elif verifyroom[2]=="1/2":
 						msg="3012 Game started. Please guess true or false"
+						f=open("Rooms.txt", "r+")
+						rooms=f.read()
+						lines=rooms.splitlines()
+						f.seek(0)
+						for line in lines:
+							if line != "Room "+room+"\t"+"1/2":
+           	 							f.write(line)
+							else:
+								f.write("Room "+room+"\t"+"2/2")
+							f.truncate()
+						f.close()
 					else:
 						msg="3013 The room is full"
 					connectionSocket.send(msg.encode('ascii'))
@@ -100,7 +127,7 @@ class ServerThread(threading.Thread):
 					room=recv[1]
 					msg="Entering Room "+room+". Please use /enter to confirm"
 					connectionSocket.send(msg.encode('ascii'))
-					enter(room)
+					enter(room, username)
 			else:
 				msg="4002 Unrecognized message"
 				connectionSocket.send(msg.encode('ascii'))
