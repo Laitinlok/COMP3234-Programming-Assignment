@@ -15,10 +15,12 @@ class ServerThread(threading.Thread):
 			username=recv[1]
 			password=recv[2]
 			userpass= username+":"+password
-			f = open("UserInfo.txt", "r")
+			f=open("UserInfo.txt", "r")
+			userinfo=f.read()
+			lines=userinfo.splitlines()
 			i=0
-			for x in f:
-				if x==userpass:
+			for line in lines:
+				if line==userpass:
 					i=1
 			if i==1:
 				msg="1001 Authentication successful"
