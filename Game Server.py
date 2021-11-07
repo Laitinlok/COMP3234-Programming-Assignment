@@ -11,11 +11,9 @@ class ServerThread(threading.Thread):
 		connectionSocket, addr = self.client    
 		rmsg = connectionSocket.recv(1024).decode()
 		recv=rmsg.split()
-		print(recv[0])
 		if recv[0]=="/login":
 			username=recv[1]
 			password=recv[2]
-			print(username+":"+password)
 		
 		
 class ServerMain:
