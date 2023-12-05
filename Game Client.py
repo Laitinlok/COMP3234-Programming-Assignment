@@ -17,5 +17,3 @@ while login=="1001 Authentication successful":
 	clientSocket.send(command.encode('ascii'))
 	rmsg = clientSocket.recv(1024).decode()
 	print(rmsg)
-	if rmsg[0]=="3011":
-		rmsg = clientSocket.recv(1024).decode()
